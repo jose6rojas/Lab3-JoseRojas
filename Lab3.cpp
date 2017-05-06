@@ -9,6 +9,8 @@ using namespace std;
 void initMatriz(char**, int, int); // matriz, filas, columnas
 void imprimirMatriz(char**, int, int); // matriz, filas, columnas
 // void liberarMatriz(char**, int, int); // matriz, filas, columnas
+bool revisarJ1(char**, int, int); // matriz, x, y
+bool revisarJ2(char**, int, int); // matriz, x, y
 
 int main()
 {
@@ -23,21 +25,52 @@ int main()
 	initMatriz(matriz, filas, columnas);
 	imprimirMatriz(matriz, filas, columnas);
 	
+	bool J1 = false;
+	bool J2 = false;
 	// Empieza el juego
-	int J1;
-	cout << "Jugador 1, escoja una columna [0-6] para dejar caer su pieza: ";
-	cin >> J1;
-	
-	for(int x = filas - 1; x >= 0; x--)
+	while(J1 == false && J2 == false)
 	{
-		if(matriz[x][J1] == ' ')
+		int x_J1;
+        	cout << "Jugador 1, escoja una columna [0-6] para dejar caer su pieza: ";
+        	cin >> x_J1;
+		
+		int y_J1;
+        	for(int i = filas - 1; i >= 0; i--)
+        	{
+                	if(matriz[i][x_J1] == ' ')
+                	{
+				y_J1 = i;
+                        	matriz[i][x_J1] = '*';
+                        	break;
+                	}
+        	}
+		
+		imprimirMatriz(matriz, filas, columnas);
+		J1 = revisarJ1(matriz, y_J1, x_J1);
+		
+		int x_J2;
+		cout << "Jugador 2, escoja una columna [0-6] para dejar caer su pieza: ";
+		cin >> x_J2;
+		
+		int y_J2;
+		for(int i = filas - 1; i >= 0; i--)
 		{
-			matriz[x][J1] = '*';
-			break;
+			if(matriz[i][x_J2] == ' ')
+			{
+				y_J2 = i;
+				matriz[i][x_J2] = '&';
+				break;
+			}
 		}
+		
+		imprimirMatriz(matriz, filas, columnas);
+		J2 = revisarJ2(matriz, y_J2, x_J2);
 	}
 	
-	imprimirMatriz(matriz, filas, columnas);
+	if(J1)
+		cout << "Ha ganado el Jugador 1" << endl;
+	else if(J2)
+		cout << "Ha ganado el Jugador 2" << endl;
 	
 	// Libera la matriz
 	for(int i = 0; i < filas; i++)
@@ -78,3 +111,301 @@ void imprimirMatriz(char** matriz, int filas, int columnas)
 	}
 	delete[] matriz;
 } */
+
+bool revisarJ1(char** matriz, int y, int x) // x es para columnas e y es para filas
+{
+	// Revisa horizontalmente, hacia la izquierda
+	int cont = 1;
+	if(x - 1 >= 0)
+	{
+		if(matriz[y][x - 1] == '*')
+		{
+			cont++;
+			if(x - 2 >= 0)
+			{
+				if(matriz[y][x - 2] == '*')
+				{
+					cont++;
+					if(x - 3 >= 0)
+					{
+						if(matriz[y][x - 3] == '*')
+						{
+							cont++;
+							return true;
+						}
+					}
+				}
+			}
+		}
+	}
+	// Revisa horizontalmente, hacia la derecha
+	if(x + 1 <= 6)
+	{
+		if(matriz[y][x + 1] == '*')
+		{
+			cont++;
+			if(x + 2 <= 6)
+			{
+				if(matriz[y][x + 2] == '*')
+				{
+					cont++;
+					if(x + 3 <= 6)
+					{
+						if(matriz[y][x + 3] == '*')
+						{
+							cont++;
+							return true;
+						}
+					}
+				}
+			}
+		}
+	}
+	// Revisa verticalmente, hacia abajo
+	if(y + 1 <= 5)
+	{
+		if(matriz[y + 1][x] == '*')
+		{
+			cont++;
+			if(y + 2 <= 5)
+			{
+				if(matriz[y + 2][x] == '*')
+				{
+					cont++;
+					if(y + 3 <= 5)
+					{
+						if(matriz[y + 3][x] == '*')
+						{
+							cont++;
+							return true;
+						}
+					}
+				}
+			}
+		}
+	}
+	// Revisa verticalmente, hacia arriba
+	if(y - 1 >= 0)
+	{
+		if(matriz[y - 1][x] == '*')
+		{
+			cont++;
+			if(y - 2 >= 0)
+			{
+				if(matriz[y - 2][x] == '*')
+				{
+					cont++;
+					if(y - 3 >= 0)
+					{
+						if(matriz[y - 3][x] == '*')
+						{
+							cont++;
+							return true;
+						}
+					}
+				}
+			}
+		}
+	}
+	// Revisa diagonalmente, de izquierda a derecha
+        if(y - 1 >= 0 && x + 1 <= 6)
+        {
+                if(matriz[y - 1][x + 1] == '*')
+                {
+                        cont++;
+                        if(y - 2 >= 0 && x + 2 <= 6)
+                        {
+                                if(matriz[y - 2][x + 2] == '*')
+                                {
+                                        cont++;
+                                        if(y - 3 >= 0 && x + 3 <= 6)
+                                        {
+                                                if(matriz[y - 3][x + 3] == '*')
+                                                {
+                                                        cont++;
+                                                        return true;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+	// Revisa diagonalmente, de derecha a izquierda
+        if(y + 1 <= 5 && x - 1 >= 0)
+        {
+                if(matriz[y + 1][x - 1] == '*')
+                {
+                        cont++;
+                        if(y + 2 <= 5 && x - 2 >= 0)
+                        {
+                                if(matriz[y + 2][x - 2] == '*')
+                                {
+                                        cont++;
+                                        if(y + 3 <= 5 && x - 3 >= 0)
+                                        {
+                                                if(matriz[y + 3][x - 3] == '*')
+                                                {
+                                                        cont++;
+                                                        return true;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+	
+	// cout << cont << endl;
+	
+	if(cont >= 4)
+		return true;
+	else
+		return false;
+}
+
+bool revisarJ2(char** matriz, int y, int x)
+{
+	// Revisa horizontalmente, hacia la izquierda
+        int cont = 1;
+        if(x - 1 >= 0)
+        {
+                if(matriz[y][x - 1] == '&')
+                {
+                        cont++;
+                        if(x - 2 >= 0)
+                        {
+                                if(matriz[y][x - 2] == '&')
+                                {
+                                        cont++;
+                                        if(x - 3 >= 0)
+                                        {
+                                                if(matriz[y][x - 3] == '&')
+                                                {
+                                                        cont++;
+                                                        return true;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+	// Revisa horizontalmente, hacia la derecha
+        if(x + 1 <= 6)
+        {
+                if(matriz[y][x + 1] == '&')
+                {
+                        cont++;
+                        if(x + 2 <= 6)
+                        {
+                                if(matriz[y][x + 2] == '&')
+                                {
+                                        cont++;
+                                        if(x + 3 <= 6)
+                                        {
+                                                if(matriz[y][x + 3] == '&')
+                                                {
+                                                        cont++;
+                                                        return true;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+	// Revisa verticalmente, hacia abajo
+        if(y + 1 <= 5)
+        {
+                if(matriz[y + 1][x] == '&')
+                {
+                        cont++;
+                        if(y + 2 <= 5)
+                        {
+                                if(matriz[y + 2][x] == '&')
+                                {
+                                        cont++;
+                                        if(y + 3 <= 5)
+                                        {
+                                                if(matriz[y + 3][x] == '&')
+                                                {
+                                                        cont++;
+                                                        return true;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+	// Revisa verticalmente, hacia arriba
+        if(y - 1 >= 0)
+        {
+                if(matriz[y - 1][x] == '&')
+                {
+                        cont++;
+                        if(y - 2 >= 0)
+                        {
+                                if(matriz[y - 2][x] == '&')
+                                {
+                                        cont++;
+                                        if(y - 3 >= 0)
+                                        {
+                                                if(matriz[y - 3][x] == '&')
+                                                {
+                                                        cont++;
+                                                        return true;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+	// Revisa diagonalmente, de izquierda a derecha
+	if(y - 1 >= 0 && x + 1 <= 6)
+	{
+		if(matriz[y - 1][x + 1] == '&')
+		{
+			cont++;
+			if(y - 2 >= 0 && x + 2 <= 6)
+			{
+				if(matriz[y - 2][x + 2] == '&')
+				{
+					cont++;
+					if(y - 3 >= 0 && x + 3 <= 6)
+					{
+						if(matriz[y - 3][x + 3] == '&')
+						{
+							cont++;
+							return true;
+						}
+					}
+				}
+			}
+		}
+	}
+	// Revisa diagonalmente, de derecha a izquierda
+	if(y + 1 <= 5 && x - 1 >= 0)
+	{
+		if(matriz[y + 1][x - 1] == '&')
+		{
+			cont++;
+			if(y + 2 <= 5 && x - 2 >= 0)
+			{
+				if(matriz[y + 2][x - 2] == '&')
+				{
+					cont++;
+					if(y + 3 <= 5 && x - 3 >= 0)
+					{
+						if(matriz[y + 3][x - 3] == '&')
+						{
+							cont++;
+							return true;
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	if(cont >= 4)
+                return true;
+        else
+                return false;
+}
